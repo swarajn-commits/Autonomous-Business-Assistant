@@ -835,6 +835,7 @@
 // 	);
 // }
 import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import VendorComparisonDashboard from "./components/VendorComparisonDashboard";
 import RawInventoryAI from "./components/RawInventoryAI";
 import OrdersPage from "./components/OrdersPage";
@@ -2069,18 +2070,12 @@ export default function SCMDashboard() {
       style={{ height: "100vh", overflow: "hidden" }}
     >
       <style>{`
-        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
-        .fade-slide-up { animation: fadeSlideUp 0.6s ease-out forwards; }
         .typing-dot { animation: typingBounce 1.4s infinite; }
         @keyframes typingBounce { 0%,60%,100%{transform:translateY(0);} 30%{transform:translateY(-8px);} }
         .scrollbar-thin::-webkit-scrollbar { width:6px; height:6px; }
         .scrollbar-thin::-webkit-scrollbar-track { background:transparent; }
         .scrollbar-thin::-webkit-scrollbar-thumb { background:${darkMode ? "rgba(148,163,184,0.3)" : "rgba(203,213,225,0.5)"}; border-radius:3px; }
         .scrollbar-thin::-webkit-scrollbar-thumb:hover { background:${darkMode ? "rgba(148,163,184,0.5)" : "rgba(148,163,184,0.7)"}; }
-        @media(max-width:768px){
-          .mobile-menu-enter { animation:slideInLeft 0.3s ease-out; }
-          @keyframes slideInLeft{from{transform:translateX(-100%);}to{transform:translateX(0);}}
-        }
       `}</style>
 {/* ── NOTIFICATION CENTER ── */}
 			<NotificationCenter open={notifOpen} onClose={() => setNotifOpen(false)} darkMode={darkMode} />
@@ -2128,28 +2123,50 @@ export default function SCMDashboard() {
 
           {/* Nav — independently scrollable */}
           <nav className="flex-1 overflow-y-auto scrollbar-thin px-4 lg:px-5 py-5 space-y-2">
-            {NAV_ITEMS.map((item) => {
-              const active = activeTab === item.name;
-              return (
-                <button
-                  key={item.name}
-                  onClick={() => {
-                    setActiveTab(item.name);
-                    setSidebarOpen(false);
-                  }}
-                  className={`
-                    w-full flex items-center gap-3 lg:gap-4
-                    px-4 lg:px-5 py-3.5 lg:py-4
-                    rounded-xl lg:rounded-2xl
-                    text-sm lg:text-base font-semibold
-                    transition-all duration-300 group relative overflow-hidden
-                    ${
-                      active
-                        ? `bg-gradient-to-r ${item.gradient} text-white shadow-xl scale-[1.02]`
-                        : `${darkMode ? "text-slate-300 hover:bg-slate-800/50 hover:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"} hover:scale-[1.01]`
-                    }
-                  `}
-                >
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: { 
+                  opacity: 1, 
+                  transition: { staggerChildren: 0.05, delayChildren: 0.1 } 
+                }
+              }}
+              className="space-y-2"
+            >
+              {NAV_ITEMS.map((item) => {
+                const active = activeTab === item.name;
+                return (
+                  <motion.button
+                    key={item.name}
+                    variants={{
+                      hidden: { opacity: 0, x: -20 },
+                      visible: { 
+                        opacity: 1, 
+                        x: 0, 
+                        transition: { type: "spring", stiffness: 300, damping: 24 } 
+                      }
+                    }}
+                    whileHover={{ scale: 1.02, x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setActiveTab(item.name);
+                      setSidebarOpen(false);
+                    }}
+                    className={`
+                      w-full flex items-center gap-3 lg:gap-4
+                      px-4 lg:px-5 py-3.5 lg:py-4
+                      rounded-xl lg:rounded-2xl
+                      text-sm lg:text-base font-semibold
+                      transition-all duration-300 group relative overflow-hidden
+                      ${
+                        active
+                          ? `bg-gradient-to-r ${item.gradient} text-white shadow-xl`
+                          : `${darkMode ? "text-slate-300 hover:bg-slate-800/50 hover:text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"}`
+                      }
+                    `}
+                  >
                   {active && (
                     <span className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   )}
@@ -2162,15 +2179,22 @@ export default function SCMDashboard() {
                   {active && (
                     <span className="ml-auto w-2 h-2 rounded-full bg-white/70 animate-pulse" />
                   )}
-                </button>
+                </motion.button>
               );
             })}
+            </motion.div>
           </nav>
 
           {/* Pro Tip */}
-          <div className={`px-4 lg:px-5 py-4 border-t ${border}`}>
-            <div
-              className={`${darkMode ? "bg-gradient-to-br from-violet-900/50 to-purple-900/50 border-violet-700/50" : "bg-gradient-to-br from-violet-50 to-purple-50 border-violet-200"} border rounded-xl p-4 backdrop-blur-xl hover:scale-[1.02] transition-transform duration-300`}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 24, delay: 0.5 }}
+            className={`px-4 lg:px-5 py-4 border-t ${border}`}
+          >
+            <motion.div
+              whileHover={{ scale: 1.02, y: -2 }}
+              className={`${darkMode ? "bg-gradient-to-br from-violet-900/50 to-purple-900/50 border-violet-700/50" : "bg-gradient-to-br from-violet-50 to-purple-50 border-violet-200"} border rounded-xl p-4 backdrop-blur-xl transition-shadow duration-300 cursor-pointer`}
             >
               <div className="flex items-center gap-2 mb-2">
                 <span>✦</span>
@@ -2186,8 +2210,8 @@ export default function SCMDashboard() {
                 Use natural language to trigger multi-agent workflows across
                 your supply chain.
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </aside>
 
         {/* ── MAIN AREA: header + content ── */}
@@ -2535,30 +2559,53 @@ export default function SCMDashboard() {
                     minHeight: 0,
                   }}
                 >
-                  {/* Stats cards */}
-                  {STATS.map((s, idx) => (
-                    <div
-                      key={s.label}
-                      className={`${cardBg} backdrop-blur-xl border rounded-xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] cursor-pointer fade-slide-up`}
-                      style={{ animationDelay: `${idx * 0.1}s`, flexShrink: 0 }}
-                    >
-                      <p
-                        className={`text-xs font-bold ${textSecondary} uppercase tracking-wider mb-2`}
+                  {/* Stats cards with Framer Motion */}
+                  <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={{
+                      hidden: { opacity: 0 },
+                      visible: { 
+                        opacity: 1, 
+                        transition: { staggerChildren: 0.1, delayChildren: 0.2 } 
+                      }
+                    }}
+                    style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+                  >
+                    {STATS.map((s) => (
+                      <motion.div
+                        key={s.label}
+                        variants={{
+                          hidden: { opacity: 0, y: 20 },
+                          visible: { 
+                            opacity: 1, 
+                            y: 0, 
+                            transition: { type: "spring", stiffness: 300, damping: 24 } 
+                          }
+                        }}
+                        whileHover={{ scale: 1.02, y: -5 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`${cardBg} backdrop-blur-xl border rounded-xl p-4 shadow-xl hover:shadow-2xl transition-shadow duration-300 cursor-pointer`}
+                        style={{ flexShrink: 0 }}
                       >
-                        {s.label}
-                      </p>
-                      <div className="flex items-end justify-between">
-                        <p className={`text-3xl font-bold ${textPrimary}`}>
-                          {s.value}
-                        </p>
-                        <span
-                          className={`text-xs font-bold px-2.5 py-1 rounded-full ${s.up === true ? "bg-emerald-500/20 text-emerald-500 border border-emerald-500/30" : s.up === false ? "bg-rose-500/20 text-rose-500 border border-rose-500/30" : "bg-slate-500/20 text-slate-500 border border-slate-400/30"}`}
+                        <p
+                          className={`text-xs font-bold ${textSecondary} uppercase tracking-wider mb-2`}
                         >
-                          {s.delta}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                          {s.label}
+                        </p>
+                        <div className="flex items-end justify-between">
+                          <p className={`text-3xl font-bold ${textPrimary}`}>
+                            {s.value}
+                          </p>
+                          <span
+                            className={`text-xs font-bold px-2.5 py-1 rounded-full ${s.up === true ? "bg-emerald-500/20 text-emerald-500 border border-emerald-500/30" : s.up === false ? "bg-rose-500/20 text-rose-500 border border-rose-500/30" : "bg-slate-500/20 text-slate-500 border border-slate-400/30"}`}
+                          >
+                            {s.delta}
+                          </span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </motion.div>
 
                   {/* Agent Pulse */}
                   <div
@@ -2579,19 +2626,38 @@ export default function SCMDashboard() {
                       <div
                         className={`absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b ${darkMode ? "from-emerald-500/30 via-slate-700 to-transparent" : "from-emerald-300 via-slate-200 to-transparent"}`}
                       />
-                      {AGENT_FEED.map((item, i) => (
-                        <div
-                          key={item.id}
-                          className="relative pl-12 fade-slide-up"
-                          style={{ animationDelay: `${i * 0.1}s` }}
-                        >
-                          <div className="absolute left-0 top-0.5">
-                            <AgentBadge
-                              code={item.agent}
-                              active={item.status === "active"}
-                              darkMode={darkMode}
-                            />
-                          </div>
+                      <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={{
+                          hidden: { opacity: 0 },
+                          visible: { 
+                            opacity: 1, 
+                            transition: { staggerChildren: 0.08 } 
+                          }
+                        }}
+                      >
+                        {AGENT_FEED.map((item) => (
+                          <motion.div
+                            key={item.id}
+                            className="relative pl-12 mb-5"
+                            variants={{
+                              hidden: { opacity: 0, x: -20 },
+                              visible: { 
+                                opacity: 1, 
+                                x: 0, 
+                                transition: { type: "spring", stiffness: 300, damping: 24 } 
+                              }
+                            }}
+                            whileHover={{ x: 5 }}
+                          >
+                            <div className="absolute left-0 top-0.5">
+                              <AgentBadge
+                                code={item.agent}
+                                active={item.status === "active"}
+                                darkMode={darkMode}
+                              />
+                            </div>
                           <p
                             className={`text-xs ${textSecondary} font-medium mb-1`}
                           >
@@ -2602,8 +2668,9 @@ export default function SCMDashboard() {
                           >
                             {item.msg}
                           </p>
-                        </div>
+                        </motion.div>
                       ))}
+                      </motion.div>
                     </div>
                   </div>
 
