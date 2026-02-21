@@ -2117,10 +2117,10 @@ export default function SCMDashboard() {
               ✦
             </div>
             <div>
-              <h2 className={`text-base lg:text-lg font-bold ${textPrimary}`}>
+              <h2 className={`font-display text-base lg:text-lg xl:text-xl font-bold tracking-tight ${textPrimary}`}>
                 SupplyChain AI
               </h2>
-              <p className={`text-xs lg:text-sm ${textSecondary}`}>
+              <p className={`text-xs lg:text-sm font-medium ${textSecondary}`}>
                 Autonomous
               </p>
             </div>
@@ -2158,7 +2158,7 @@ export default function SCMDashboard() {
                   >
                     {item.icon}
                   </span>
-                  <span className="relative z-10">{item.name}</span>
+                  <span className="relative z-10 font-display font-semibold tracking-tight">{item.name}</span>
                   {active && (
                     <span className="ml-auto w-2 h-2 rounded-full bg-white/70 animate-pulse" />
                   )}
@@ -2175,7 +2175,7 @@ export default function SCMDashboard() {
               <div className="flex items-center gap-2 mb-2">
                 <span>✦</span>
                 <p
-                  className={`text-xs font-bold ${darkMode ? "text-violet-300" : "text-violet-900"}`}
+                  className={`font-display text-xs font-bold tracking-tight ${darkMode ? "text-violet-300" : "text-violet-900"}`}
                 >
                   Pro Tip
                 </p>
@@ -2241,12 +2241,12 @@ export default function SCMDashboard() {
                 </svg>
               </button>
               <div className="min-w-0">
-                <h2
-                  className={`text-xl lg:text-2xl font-bold ${textPrimary} truncate`}
+                <h1
+                  className={`font-display text-xl lg:text-2xl xl:text-3xl font-bold tracking-tight ${textPrimary} truncate`}
                 >
                   {activeTab}
-                </h2>
-                <p className={`text-xs ${textSecondary} mt-0.5`}>
+                </h1>
+                <p className={`text-xs lg:text-sm font-medium ${textSecondary} mt-0.5`}>
                   Autonomous operations dashboard
                 </p>
               </div>
@@ -2308,11 +2308,11 @@ export default function SCMDashboard() {
                   </div>
                   <div className="hidden sm:block text-left">
                     <p
-                      className={`text-sm font-bold ${textPrimary} leading-none`}
+                      className={`font-display text-sm font-bold tracking-tight ${textPrimary} leading-none`}
                     >
                       John Doe
                     </p>
-                    <p className={`text-xs ${textSecondary} mt-0.5`}>
+                    <p className={`text-xs font-medium ${textSecondary} mt-0.5`}>
                       SCM Manager
                     </p>
                   </div>
@@ -2394,11 +2394,11 @@ export default function SCMDashboard() {
                         ✦
                       </div>
                       <div>
-                        <p
-                          className={`text-base lg:text-lg font-bold ${textPrimary}`}
+                        <h2
+                          className={`font-display text-base lg:text-lg font-bold tracking-tight ${textPrimary}`}
                         >
                           Autonomous Business Assistant
-                        </p>
+                        </h2>
                         <div className="flex items-center gap-2 mt-1">
                           <PulsingDot
                             color={
