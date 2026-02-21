@@ -944,11 +944,11 @@ const NOTIF_TYPE_CONFIG = {
 };
 
 // ── NOTIFICATION CENTER COMPONENT ──
-function NotificationCenter({ open, onClose, darkMode }) {
+function NotificationCenter({ open, onClose, darkMode }: { open: boolean; onClose: () => void; darkMode: boolean }) {
 	const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
 	const [activeFilter, setActiveFilter] = useState("All");
-	const [hoveredId, setHoveredId] = useState(null);
-	const panelRef = useRef(null);
+	const [hoveredId, setHoveredId] = useState<number | null>(null);
+	const panelRef = useRef<HTMLDivElement>(null);
 
 	const filters = ["All", "Unread", "Critical", "AI", "Orders", "Logistics"];
 
@@ -969,15 +969,15 @@ function NotificationCenter({ open, onClose, darkMode }) {
 	});
 
 	const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-	const markRead = (id) => setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-	const dismiss = (id) => setNotifications(prev => prev.filter(n => n.id !== id));
+	const markRead = (id: number) => setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+	const dismiss = (id: number) => setNotifications(prev => prev.filter(n => n.id !== id));
 	const clearAll = () => setNotifications([]);
 
 	// Close on outside click
 	useEffect(() => {
 		if (!open) return;
-		const handler = (e) => {
-			if (panelRef.current && !panelRef.current.contains(e.target)) onClose();
+		const handler = (e: MouseEvent) => {
+			if (panelRef.current && !panelRef.current.contains(e.target as Node)) onClose();
 		};
 		document.addEventListener("mousedown", handler);
 		return () => document.removeEventListener("mousedown", handler);
@@ -1073,8 +1073,8 @@ function NotificationCenter({ open, onClose, darkMode }) {
 										fontFamily: "sans-serif", transition: "all 0.2s",
 										whiteSpace: "nowrap",
 									}}
-									onMouseEnter={e => e.target.style.background = darkMode ? "rgba(124,58,237,0.35)" : "rgba(124,58,237,0.2)"}
-									onMouseLeave={e => e.target.style.background = darkMode ? "rgba(124,58,237,0.2)" : "rgba(124,58,237,0.1)"}
+									onMouseEnter={e => (e.target as HTMLButtonElement).style.background = darkMode ? "rgba(124,58,237,0.35)" : "rgba(124,58,237,0.2)"}
+									onMouseLeave={e => (e.target as HTMLButtonElement).style.background = darkMode ? "rgba(124,58,237,0.2)" : "rgba(124,58,237,0.1)"}
 								>
 									Mark all read
 								</button>
@@ -1146,7 +1146,7 @@ function NotificationCenter({ open, onClose, darkMode }) {
 						</div>
 					) : (
 						filtered.map((notif, i) => {
-							const cfg = NOTIF_TYPE_CONFIG[notif.type] || NOTIF_TYPE_CONFIG.system;
+							const cfg = NOTIF_TYPE_CONFIG[notif.type as keyof typeof NOTIF_TYPE_CONFIG] || NOTIF_TYPE_CONFIG.system;
 							const isHovered = hoveredId === notif.id;
 							return (
 								<div
@@ -1219,9 +1219,6 @@ function NotificationCenter({ open, onClose, darkMode }) {
 													fontSize: "0.62rem", fontWeight: 700, padding: "0.15rem 0.5rem",
 													borderRadius: "9999px", textTransform: "uppercase", letterSpacing: "0.05em",
 													background: darkMode ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.06)",
-													color: darkMode
-														? cfg.labelColor.replace("text-", "").replace("-400", "")
-														: cfg.labelColor.replace("text-", "").replace("-400", ""),
 													// Inline color since Tailwind won't know these at runtime
 													color: notif.type === "critical" ? "#f87171"
 														: notif.type === "ai" ? "#a78bfa"
